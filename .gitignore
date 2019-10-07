@@ -1,0 +1,8 @@
+.php_cs.cache
+composer.phar
+build
+composer.lock
+vendor
+cache
+docs
+!/bin
