@@ -287,33 +287,6 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan(0, $deviceData->mtime());
     }
 
-    public function testGetAllMakeModel()
-    {
-        $client = $this->makeTestClient();
-        $makeModels = $client->getAllMakeModel();
-        $this->assertGreaterThan(20000, count($makeModels));
-        $this->assertNotEmpty($makeModels[0]->brandName());
-        $this->assertNotEmpty($makeModels[0]->modelName());
-        $this->assertEmpty($makeModels[0]->marketingName());
-    }
-
-    public function testGetAllMakeModelWithCache()
-    {
-        $client = $this->makeTestClientWithCache();
-        $makeModels = $client->getAllMakeModel();
-        $this->assertGreaterThan(20000, count($makeModels));
-        $this->assertNotEmpty($makeModels[0]->brandName());
-        $this->assertNotEmpty($makeModels[0]->modelName());
-        $this->assertEmpty($makeModels[0]->marketingName());
-        
-        $makeModels = $client->getAllMakeModel();
-        $this->assertGreaterThan(20000, count($makeModels));
-        $this->assertNotEmpty($makeModels[0]->brandName());
-        $this->assertNotEmpty($makeModels[0]->modelName());
-
-        $this->assertEmpty($makeModels[0]->marketingName());
-    }
-
     public function testGetAllDeviceMakes()
     {
         $client = $this->makeTestClient();

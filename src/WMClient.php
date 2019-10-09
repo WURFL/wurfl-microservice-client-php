@@ -333,33 +333,6 @@ class WMClient
     }
 
     /**
-     * Returns identity data for all devices in WM server
-     * @deprecated since 1.2.0.0 in favour of getAllDeviceMakes
-     * @return MakeModelData[]
-     */
-    public function getAllMakeModel()
-    {
-        $endpoint = '/v2/alldevices/json';
-
-        $makeModels = $this->clientCache->get('makeModels');
-
-        if (is_array($makeModels) && count($makeModels) > 0) {
-            return $makeModels;
-        }
-
-        $response = $this->client->get($endpoint, $this->makeHeaders());
-        $data = json_decode($response->getBody(), true);
-        $makeModels = [];
-        foreach ($data as $makeModelData) {
-            $makeModels[] = new MakeModelData($makeModelData);
-        }
-
-        $this->clientCache->add('makeModels', $makeModels);
-
-        return $makeModels;
-    }
-
-    /**
      * Returns an array of all devices brand_name capability
      * @return array
      */

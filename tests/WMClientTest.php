@@ -122,35 +122,6 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('samsung_sm_g950f_int_ver1', $device->capabilities('wurfl_id'));
     }
 
-    public function testClearCacheIfNeeded()
-    {
-        $httpClient = $this->prophesize('\ScientiaMobile\WMClient\HttpClient\HttpClientInterface');
-        $httpClient->getDefaultUserAgent()->willReturn(Argument::any());
-        $httpClient->get("/v2/alldevices/json", Argument::any())->willReturn(ResponseMocker::wmAllDeviceResponse());
-        $httpClient->get("/v2/getinfo/json", Argument::any())->willReturn(ResponseMocker::wmValidServerInfoResponse());
-
-        $client = new WMClient($httpClient->reveal());
-        $client->getAllMakeModel();
-        $httpClient->get('/v2/alldevices/json', Argument::any())->shouldBeCalled();
-
-        $httpClient = $this->prophesize('\ScientiaMobile\WMClient\HttpClient\HttpClientInterface');
-        $httpClient->getDefaultUserAgent()->willReturn(Argument::any());
-        $httpClient->get("/v2/getinfo/json", Argument::any())->willReturn(ResponseMocker::wmValidServerInfoResponse());
-
-        $client = new WMClient($httpClient->reveal());
-        $client->getAllMakeModel();
-        $httpClient->get('/v2/alldevices/json', Argument::any())->shouldNotBeCalled();
-
-        $httpClient = $this->prophesize('\ScientiaMobile\WMClient\HttpClient\HttpClientInterface');
-        $httpClient->getDefaultUserAgent()->willReturn(Argument::any());
-        $httpClient->get("/v2/alldevices/json", Argument::any())->willReturn(ResponseMocker::wmAllDeviceResponse());
-        $httpClient->get("/v2/getinfo/json",
-            Argument::any())->willReturn(ResponseMocker::wmValidServerInfoResponseWithUpdatedWURFL());
-        $client = new WMClient($httpClient->reveal());
-        $client->getAllMakeModel();
-        $httpClient->get('/v2/alldevices/json', Argument::any())->shouldBeCalled();
-    }
-
     public function testGetApiVersion()
     {
         $httpClient = $this->mockHttpClient();
