@@ -147,8 +147,14 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = $this->makeTestClient();
         $deviceData = $client->lookupUserAgent("");
-        // Applicative error is empty, we'll receive an error message in JSON payload
-        $this->assertContains('No User-Agent', $deviceData->error());
+        $info = $client->getInfo();
+        if (version_compare($info->wmVersion(), "2.1.0",">=")) {
+            // v2.1.x returns a generic device for an empty user agent
+            $this->assertSame('generic', $deviceData->capabilities('wurfl_id'));
+        } else {
+            // Applicative error is empty, we'll receive an error message in JSON payload
+            $this->assertContains('No User-Agent', $deviceData->error());
+        }
     }
 
     public function testLookupUserAgentWithSpecifiedCaps()
@@ -226,7 +232,14 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $headers = [];
         $request = new Request("GET", $url, $headers);
         $deviceData = $client->lookupRequest($request);
-        $this->assertContains('No User-Agent', $deviceData->error());
+        $info = $client->getInfo();
+        if (version_compare($info->wmVersion(), "2.1.0",">=")) {
+            // v2.1.x returns a generic device for an empty user agent
+            $this->assertSame('generic', $deviceData->capabilities('wurfl_id'));
+        } else {
+            // Applicative error is empty, we'll receive an error message in JSON payload
+            $this->assertContains('No User-Agent', $deviceData->error());
+        }
     }
 
     public function testLookupDeviceId()
@@ -295,6 +308,9 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($modelMktName[0]);
     }
 
+    /**
+     * @expectedException \Exception
+     */
     public function testGetAllDevicesForMake()
     {
         $client = $this->makeTestClient();
@@ -303,7 +319,6 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($modelMktName[0]->marketingName());
         $this->assertGreaterThan(700, count($modelMktName));
 
-        $this->expectException("\Exception");
         $client->getAllDevicesForMake("Invalid");
     }
 
@@ -315,13 +330,15 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($modelMktName[0]);
     }
 
+    /**
+     * @expectedException \Exception
+     */
     public function testGetAllVersionsForOS()
     {
         $client = $this->makeTestClient();
         $modelMktName = $client->getAllVersionsForOS("Android");
         $this->assertGreaterThan(30, count($modelMktName));
 
-        $this->expectException("\Exception");
         $client->getAllDevicesForMake("NotExistingOs");
     }
 
