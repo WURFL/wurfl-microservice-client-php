@@ -40,7 +40,6 @@ return new Sami($iterator, array(
 
             public function acceptMethod(MethodReflection $method)
             {
-                var_dump('ciso');
                 if ($method->getTags('internal'))  {
                     return false;
                 }
