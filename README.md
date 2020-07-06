@@ -10,19 +10,21 @@ This is the PHP Client API for accessing the WURFL Microservice. The API is rele
 
 ## Requirements
 
- - `PHP 5.5+`
+ - `PHP 5.5+` (suggested PHP >= 7.1)
  - `json` extension (almost always included)
  - `curl` extension is recommended
 
-## Install composer dependencies
+## Installation using composer
 
-    composer install --no-dev --optimize-autoloader
+```
+composer require scientiamobile/wm-client
+```
 
 ## Examples WURFL Microservice Client
 
 ```php
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once '/path/to/vendor/autoload.php';
 
 try {
     // First we need to create a WM client instance, to connect to our WM server API at the specified host and port.
