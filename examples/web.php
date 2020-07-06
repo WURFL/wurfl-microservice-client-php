@@ -15,7 +15,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
+
+if (version_compare(PHP_VERSION, "7.1", "<")) {
+    echo "This example requires PHP >= 7.1";
+    exit;
+}
+
+if (!class_exists("\Laminas\Diactoros\ServerRequestFactory")) {
+    echo "This example uses the Laminas\Diactoros library. Please install with: composer require laminas/laminas-diactoros";
+}
 
 try {
     // First we need to create a WM client instance, to connect to our WM server API at the specified host and port.
@@ -44,10 +53,12 @@ $wmClient->setRequestedStaticCapabilities(["model_name", "brand_name"]);
 $wmClient->setRequestedVirtualCapabilities(["is_smartphone", "form_factor"]);
 
 // Fetch the server request
-// Note: In this example we'll using Zend Diactoros to create a PSR7 request 
-// from the supplied superglobal values.
-// Ensure the library has been installed via composer
-$serverRequest = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
+// Note: In this example we'll using Laminas Diactoros to create a PSR7 request 
+// from the supplied superglobal values and requires. 
+// Laminas Diactoros requires PHP >= 7.1 
+// The library can be installed via composer:
+// composer require laminas/laminas-diactoros
+$serverRequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Perform a device detection calling WM server API
 $deviceData = $wmClient->lookupRequest($serverRequest);
