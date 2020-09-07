@@ -8,6 +8,10 @@ This is the PHP Client API for accessing the WURFL Microservice. The API is rele
 
 - WURFL Microservice for AWS: https://www.scientiamobile.com/products/wurfl-device-detection-microservice-aws/ 
 
+- WURFL Microservice for Azure: https://www.scientiamobile.com/products/wurfl-microservice-for-azure/
+
+- WURFL Microservice for Google Cloud Platform: https://www.scientiamobile.com/products/wurfl-microservice-for-gcp/
+
 ## Requirements
 
  - `PHP 5.5+` (suggested PHP >= 7.1)
