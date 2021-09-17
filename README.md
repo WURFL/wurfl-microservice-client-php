@@ -142,6 +142,8 @@ foreach ($versions as $version) {
 }
 ```
 
+If you cloned this repo directly, you must install the dependencies first with `composer install` before running the example above.
+
 See more in the [examples](examples) folder 
 
 ## Testing
