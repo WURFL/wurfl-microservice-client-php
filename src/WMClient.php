@@ -121,7 +121,7 @@ class WMClient
      */
     public function getApiVersion()
     {
-        return '2.0.0';
+        return '2.0.3';
     }
 
     /**
@@ -241,7 +241,7 @@ class WMClient
         $jsonRequest->lookupHeaders($headers);
         $jsonRequest->requestedCaps($this->requestedStaticCapabilities);
         $jsonRequest->requestedVCaps($this->requestedVirtualCapabilities);
-        $response = $this->client->post($endpoint, $this->makeHeaders($headers), $jsonRequest);
+        $response = $this->client->post($endpoint, $this->makeHeaders(), $jsonRequest);
 
         $deviceData = new JsonDeviceData($response);
 
@@ -272,7 +272,7 @@ class WMClient
         $jsonRequest->lookupHeaders($headers);
         $jsonRequest->requestedCaps($this->requestedStaticCapabilities);
         $jsonRequest->requestedVCaps($this->requestedVirtualCapabilities);
-        $response = $this->client->post($endpoint, $this->makeHeaders($headers), $jsonRequest);
+        $response = $this->client->post($endpoint, $this->makeHeaders(), $jsonRequest);
 
         $deviceData = new JsonDeviceData($response);
 

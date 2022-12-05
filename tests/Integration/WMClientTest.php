@@ -168,6 +168,35 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('touchscreen', $deviceData->capabilities('pointing_method'));
     }
 
+    public function testLookupRequest()
+    {
+        $client = $this->makeTestClient();
+
+        $url = "http://vimeo.com/api/v2/brad/info.json";
+        $headers = [
+            "Content-Type" => "application/json",
+            "Accept-Encoding" => "gzip, deflate",
+            "User-Agent" => "Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/601.6 (KHTML, like Gecko) NF/4.0.0.5.9 NintendoBrowser/5.1.0.13341",
+        ];
+        $request = new Request("GET", $url, $headers);
+        $deviceData = $client->lookupRequest($request);
+        $this->assertSame('Nintendo', $deviceData->capabilities('brand_name'));
+        $this->assertSame('Switch', $deviceData->capabilities('model_name'));
+        $this->assertSame('touchscreen', $deviceData->capabilities('pointing_method'));
+        $this->assertSame('720', $deviceData->capabilities('resolution_height'));
+        $this->assertSame('1280', $deviceData->capabilities('resolution_width'));
+
+
+        $mtime = $deviceData->mtime();
+
+        //Test client is not using cache
+        sleep(1);
+        $deviceData = $client->lookupRequest($request);
+        $this->assertNotSame($mtime, $deviceData->mtime());
+
+
+    }
+
 
     public function testLookupRequestWithSpecifiedCaps()
     {
@@ -218,6 +247,24 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         sleep(1);
         $deviceData = $client->lookupRequest($request);
         $this->assertSame($mtime, $deviceData->mtime());
+        $this->assertSame('Nintendo', $deviceData->capabilities('brand_name'));
+        $this->assertSame('Switch', $deviceData->capabilities('model_name'));
+        $this->assertSame('touchscreen', $deviceData->capabilities('pointing_method'));
+    }
+
+    public function testLookupRequestWithMixedCaseHeaders()
+    {
+        $client = $this->makeTestClient();
+        $client->setRequestedStaticCapabilities(["brand_name", "is_wireless_device", "pointing_method", "model_name"]);
+
+        $url = "http://vimeo.com/api/v2/brad/info.json";
+        $headers = [
+            "ConteNT-TyPe" => "application/json",
+            "Accept-EncODing" => "gzip, deflate",
+            "User-AGenT" => "Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/601.6 (KHTML, like Gecko) NF/4.0.0.5.9 NintendoBrowser/5.1.0.13341",
+        ];
+        $request = new Request("GET", $url, $headers);
+        $deviceData = $client->lookupRequest($request);
         $this->assertSame('Nintendo', $deviceData->capabilities('brand_name'));
         $this->assertSame('Switch', $deviceData->capabilities('model_name'));
         $this->assertSame('touchscreen', $deviceData->capabilities('pointing_method'));

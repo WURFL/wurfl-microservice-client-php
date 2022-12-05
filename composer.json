@@ -2,7 +2,7 @@
   "name": "scientiamobile/wm-client",
   "description": "WURFL Microservice PHP API",
   "license": "proprietary",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "authors": [
     {
       "name": "Luca Corbo"
