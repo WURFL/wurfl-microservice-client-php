@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.3] - 2022-12-05
+
+Avoid sending headers from the device that has to be looked up as client request http header. 
+They are just sent as request json payload. This avoid issues with Brotly or other framwork/libraries
+
 ## [2.0.2] - 2020-07-06
 - Update web example to use Laminas\Diactoros. Now requires PHP >= 7.1
 - [README] Update installation step with composer
