@@ -20,16 +20,16 @@ namespace ScientiaMobile\WMClient\Cache\Adapters;
 
 class ApcuCacheTest extends CacheTestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         try {
             ApcuCache::isAvailable();
         } catch (\Exception $e) {
-            \PHPUnit_Framework_TestCase::markTestSkipped($e->getMessage());
+            self::markTestSkipped($e->getMessage());
         }
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->cache = new ApcuCache();
@@ -38,6 +38,6 @@ class ApcuCacheTest extends CacheTestCase
 
     public function testCacheAdapterWithTtl()
     {
-        \PHPUnit_Framework_TestCase::markTestSkipped("The APCu cache TTL does not expire in a single process/request. See: http://php.net/manual/en/function.apcu-store.php#ttl");
+        self::markTestSkipped("The APCu cache TTL does not expire in a single process/request. See: http://php.net/manual/en/function.apcu-store.php#ttl");
     }
 }

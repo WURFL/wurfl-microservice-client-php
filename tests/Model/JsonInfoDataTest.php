@@ -8,14 +8,14 @@ namespace ScientiaMobile\WMClient\Model;
 
 use ScientiaMobile\WMClient\ResponseMocker;
 
-class JsonInfoDataTest extends \PHPUnit_Framework_TestCase
+class JsonInfoDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testJSONInfoData()
     {
         $response = ResponseMocker::wmValidServerInfoResponse();
         $jsonInfoData = new JsonInfoData($response);
         $this->assertSame("1.0.0.0", $jsonInfoData->wmVersion());
-        $this->assertContains("wurfl.zip:for WURFL API 1.9.0.0", $jsonInfoData->wurflInfo());
+        $this->assertStringContainsString("wurfl.zip:for WURFL API 1.9.0.0", $jsonInfoData->wurflInfo());
         $this->assertSame("1.9.0.1", $jsonInfoData->wurflAPIVersion());
         $this->assertGreaterThan(0, count($jsonInfoData->staticCaps()));
         $this->assertGreaterThan(0, count($jsonInfoData->virtualCaps()));

@@ -18,17 +18,19 @@
 
 namespace ScientiaMobile\WMClient\Cache;
 
-class DeviceCacheTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+use ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface;
+
+class DeviceCacheTest extends TestCase
 {
     public function testShouldRetrieveItemFromCache()
     {
         $key = 'key';
         $expected = 'value';
 
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $adapter->get($key)->willReturn($expected);
-        $adapter->setNamespace(DeviceCache::getNamespace())->willReturn();
-        $cache = new DeviceCache($adapter->reveal(), null);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $adapter->method('get')->with($key)->willReturn($expected);
+        $cache = new DeviceCache($adapter, null);
 
         $this->assertSame($expected, $cache->get($key));
     }
@@ -40,20 +42,18 @@ class DeviceCacheTest extends \PHPUnit_Framework_TestCase
         $value = 'value';
         $ttl = 10;
 
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $adapter->set($key, $value, $ttl)->willReturn(true);
-        $adapter->setNamespace(DeviceCache::getNamespace())->willReturn();
-        $cache = new DeviceCache($adapter->reveal(), $ttl);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $adapter->method('set')->with($key, $value, $ttl)->willReturn(true);
+        $cache = new DeviceCache($adapter, $ttl);
 
         $this->assertTrue($cache->add($key, $value));
     }
 
     public function testShouldClearNamespaceCache()
     {
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $adapter->clear()->willReturn(0);
-        $adapter->setNamespace(DeviceCache::getNamespace())->willReturn();
-        $cache = new DeviceCache($adapter->reveal(), 0);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $adapter->method('clear')->willReturn(0);
+        $cache = new DeviceCache($adapter, 0);
         $this->assertSame(0, $cache->clear());
     }
 }

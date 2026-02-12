@@ -8,7 +8,7 @@ namespace ScientiaMobile\WMClient\Model;
 
 use ScientiaMobile\WMClient\ResponseMocker;
 
-class JsonDeviceDataTest extends \PHPUnit_Framework_TestCase
+class JsonDeviceDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testValidRequest()
     {
