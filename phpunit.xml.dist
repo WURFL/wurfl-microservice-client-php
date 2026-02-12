@@ -2,14 +2,9 @@
 <phpunit
         bootstrap="./vendor/autoload.php"
         colors="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
-        verbose="true"
         stopOnFailure="false"
         processIsolation="false"
         backupGlobals="false"
-        syntaxCheck="true"
         columns="max"
 >
     <testsuites>
@@ -21,11 +16,11 @@
             <directory>./tests/Integration</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
+    <source>
+        <include>
             <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </source>
     <php>
         <env name="WM_SCHEME" value="http"/>
         <env name="WM_HOST" value="localhost"/>

@@ -44,6 +44,8 @@ class ModelMktNameData implements \JsonSerializable
         return $this->data['marketing_name'];
     }
 
+    // Suppress return type deprecation to maintain PHP 7.4 compatibility
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->data;

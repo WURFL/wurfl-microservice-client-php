@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.4] - 2026-02-13
+- Minimum required PHP version: 7.4 (runtime), 8.2 (development and testing)
+- PHPUnit dependency updated in order to solve Unsafe Deserialization vulnerability
+- Suppresses return type deprecation warnings when running on PHP 8.2+ while maintaining backward compatibility with PHP 7.4.
+- Migrated test suite to PHPUnit 11
+
 ## [2.0.3] - 2022-12-05
 
 - Fix: This Now wurfl microservice client sends only its internal user-agent as header in HTTP requests. All headers used for device detection are only sent as JSON request payload.

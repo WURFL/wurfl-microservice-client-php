@@ -21,14 +21,14 @@ namespace ScientiaMobile\WMClient\Cache\Adapters;
 use ScientiaMobile\WMClient\Cache\Adapters\NullCache;
 use ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface;
 
-class NullCacheTest extends \PHPUnit_Framework_TestCase
+class NullCacheTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WMAdapterCacheInterface
      */
     protected $cache;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cache = new NullCache();
     }

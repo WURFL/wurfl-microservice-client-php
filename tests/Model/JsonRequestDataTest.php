@@ -6,7 +6,7 @@
 
 namespace ScientiaMobile\WMClient\Model;
 
-class JsonRequestDataTest extends \PHPUnit_Framework_TestCase
+class JsonRequestDataTest extends \PHPUnit\Framework\TestCase
 {
     public function testShouldAddLookupHeaders()
     {
