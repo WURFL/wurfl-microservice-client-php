@@ -18,14 +18,17 @@
 
 namespace ScientiaMobile\WMClient\Cache;
 
-class UserAgentCacheTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+use ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface;
+
+class UserAgentCacheTest extends TestCase
 {
     private $importantHeaders = ['User-Agent'];
 
     public function testMakeKey()
     {
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $cache = new UserAgentCache($adapter->reveal(), $this->importantHeaders, null);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $cache = new UserAgentCache($adapter, $this->importantHeaders, null);
 
         $headers = [
             'User-Agent' => 'Mozilla',
@@ -40,10 +43,9 @@ class UserAgentCacheTest extends \PHPUnit_Framework_TestCase
         $key = 'key';
         $expected = 'value';
 
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $adapter->get($key)->willReturn($expected);
-        $adapter->setNamespace(UserAgentCache::getNamespace())->willReturn();
-        $cache = new UserAgentCache($adapter->reveal(), $this->importantHeaders, null);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $adapter->method('get')->with($key)->willReturn($expected);
+        $cache = new UserAgentCache($adapter, $this->importantHeaders, null);
 
         $this->assertSame($expected, $cache->get($key));
     }
@@ -55,20 +57,18 @@ class UserAgentCacheTest extends \PHPUnit_Framework_TestCase
         $value = 'value';
         $ttl = 10;
 
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $adapter->set($key, $value, $ttl)->willReturn(true);
-        $adapter->setNamespace(UserAgentCache::getNamespace())->willReturn();
-        $cache = new UserAgentCache($adapter->reveal(), $this->importantHeaders, $ttl);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $adapter->method('set')->with($key, $value, $ttl)->willReturn(true);
+        $cache = new UserAgentCache($adapter, $this->importantHeaders, $ttl);
 
         $this->assertTrue($cache->add($key, $value));
     }
 
     public function testShouldClearNamespaceCache()
     {
-        $adapter = $this->prophesize('\ScientiaMobile\WMClient\Cache\Adapters\WMAdapterCacheInterface');
-        $adapter->clear()->willReturn(0);
-        $adapter->setNamespace(UserAgentCache::getNamespace())->willReturn();
-        $cache = new UserAgentCache($adapter->reveal(), $this->importantHeaders, 0);
+        $adapter = $this->createMock(WMAdapterCacheInterface::class);
+        $adapter->method('clear')->willReturn(0);
+        $cache = new UserAgentCache($adapter, $this->importantHeaders, 0);
         $this->assertSame(0, $cache->clear());
     }
 }

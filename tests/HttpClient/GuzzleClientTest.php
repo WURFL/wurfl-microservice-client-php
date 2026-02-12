@@ -18,117 +18,106 @@
 
 namespace ScientiaMobile\WMClient;
 
-
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use PHPUnit\Framework\TestCase;
 use ScientiaMobile\WMClient\HttpClient\GuzzleClient;
 use ScientiaMobile\WMClient\Model\JsonRequestData;
 
-class GuzzleClientTest extends \PHPUnit_Framework_TestCase
+class GuzzleClientTest extends TestCase
 {
     public function testGetMethod()
     {
-        $uri = new Uri('http://test.local');
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
-
-        $guzzleResponse = new Response(200, [], \GuzzleHttp\Psr7\stream_for('body response'));
-        $guzzle->get('http://test.local/endpoint', [])->willReturn($guzzleResponse);
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
+        $mock = new MockHandler([
+            new Response(200, [], 'body response'),
+        ]);
+        $client = $this->makeClient($mock);
         $response = $client->get('/endpoint', []);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
     }
 
     public function testGetMethodWithHeaders()
     {
-        $uri = new Uri('http://test.local');
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
-        $headers = ['User-Agent' => 'Mozilla'];
-
-        $guzzleResponse = new Response(200, [], \GuzzleHttp\Psr7\stream_for('body response'));
-        $guzzle->get('http://test.local/endpoint', ["headers" => $headers])->willReturn($guzzleResponse);
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
-        $response = $client->get('/endpoint', $headers);
+        $mock = new MockHandler([
+            new Response(200, [], 'body response'),
+        ]);
+        $client = $this->makeClient($mock);
+        $response = $client->get('/endpoint', ['User-Agent' => 'Mozilla']);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
     }
 
     public function testGetMethodException()
     {
-        $uri = new Uri('http://test.local');
+        $mock = new MockHandler([
+            new RequestException('Error', new Request('GET', '/endpoint')),
+        ]);
+        $client = $this->makeClient($mock);
 
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
-        $guzzle->get('http://test.local/endpoint', [])->willThrow(new \Exception());
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
-
-        $this->setExpectedException('\ScientiaMobile\WMClient\HttpClient\HttpClientException');
+        $this->expectException('\ScientiaMobile\WMClient\HttpClient\HttpClientException');
         $client->get('/endpoint', []);
     }
 
     public function testPostMethod()
     {
-        $uri = new Uri('http://test.local');
-        $guzzleResponse = new Response(200, [], \GuzzleHttp\Psr7\stream_for('body response'));
-
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
-        $guzzle->post('http://test.local/endpoint', [])->willReturn($guzzleResponse);
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
+        $mock = new MockHandler([
+            new Response(200, [], 'body response'),
+        ]);
+        $client = $this->makeClient($mock);
         $response = $client->post('/endpoint', [], []);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
     }
 
     public function testPostMethodException()
     {
-        $uri = new Uri('http://test.local');
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
+        $mock = new MockHandler([
+            new RequestException('Error', new Request('POST', '/endpoint')),
+        ]);
+        $client = $this->makeClient($mock);
 
-        $guzzle->post('http://test.local/endpoint', [])->willThrow(new \Exception());
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
-
-        $this->setExpectedException('\ScientiaMobile\WMClient\HttpClient\HttpClientException');
+        $this->expectException('\ScientiaMobile\WMClient\HttpClient\HttpClientException');
         $client->post('/endpoint', [], []);
     }
 
     public function testPostMethodWithPayload()
     {
-        $uri = new Uri('http://test.local');
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
+        $mock = new MockHandler([
+            new Response(200, [], 'body response'),
+        ]);
+        $client = $this->makeClient($mock);
         $jsonBody = (new JsonRequestData())->jsonSerialize();
-
-        $guzzleResponse = new Response(200, [], \GuzzleHttp\Psr7\stream_for('body response'));
-        $guzzle->post('http://test.local/endpoint', ['json' => $jsonBody])->willReturn($guzzleResponse);
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
         $response = $client->post('/endpoint', [], $jsonBody);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
     }
 
     public function testPostMethodWithPayloadAndHeaders()
     {
-        $uri = new Uri('http://test.local');
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
+        $mock = new MockHandler([
+            new Response(200, [], 'body response'),
+        ]);
+        $client = $this->makeClient($mock);
         $jsonBody = (new JsonRequestData())->jsonSerialize();
         $headers = ['User-Agent' => 'Mozilla'];
-
-        $guzzleResponse = new Response(200, [], \GuzzleHttp\Psr7\stream_for('body response'));
-        $guzzle->post(
-            'http://test.local/endpoint',
-            ['headers' => $headers, 'json' => $jsonBody]
-        )->willReturn($guzzleResponse);
-
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
         $response = $client->post('/endpoint', $headers, $jsonBody);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
     }
 
     public function testGetDefaultUserAgent()
     {
+        $mock = new MockHandler([]);
+        $client = $this->makeClient($mock);
+        $this->assertStringStartsWith('GuzzleHttp/', $client->getDefaultUserAgent());
+    }
+
+    private function makeClient(MockHandler $mock): GuzzleClient
+    {
+        $handlerStack = HandlerStack::create($mock);
+        $guzzle = new Client(['handler' => $handlerStack]);
         $uri = new Uri('http://test.local');
-        $guzzle = $this->prophesize('\GuzzleHttp\Client');
-        $client = new GuzzleClient($guzzle->reveal(), $uri);
-        $this->assertStringStartsWith('GuzzleHttp/6', $client->getDefaultUserAgent());
+        return new GuzzleClient($guzzle, $uri);
     }
 }

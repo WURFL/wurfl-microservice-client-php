@@ -18,24 +18,22 @@
 
 namespace ScientiaMobile\WMClient;
 
-use GuzzleHttp\Psr7\Request;
-use Prophecy\Argument;
+use PHPUnit\Framework\TestCase;
+use ScientiaMobile\WMClient\HttpClient\HttpClientInterface;
+use ScientiaMobile\WMClient\Model\JsonRequestData;
 
-/**
- * Class WMClientTest
- */
-class WMClientTest extends \PHPUnit_Framework_TestCase
+class WMClientTest extends TestCase
 {
     public function testFactoryInvalidScheme()
     {
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         WMClient::create('ftp', 'localhost', 80);
     }
 
     public function testRequestedCapabilities()
     {
         $httpClient = $this->mockHttpClient();
-        $client = new WMClient($httpClient->reveal());
+        $client = new WMClient($httpClient);
         $this->assertTrue($client->hasStaticCapability('brand_name'));
         $this->assertFalse($client->hasStaticCapability('mobile_browser'));
         $this->assertTrue($client->hasVirtualCapability('is_app'));
@@ -43,22 +41,21 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
 
         $client->setRequestedCapabilities(['is_app', 'brand_name', 'mobile_browser', 'invalid_cap']);
 
+        $ref = new \ReflectionProperty($client, 'requestedVirtualCapabilities');
+        $ref->setAccessible(true);
+        $this->assertSame(['is_app'], $ref->getValue($client));
 
-        $this->assertAttributeEquals(['is_app'], 'requestedVirtualCapabilities', $client);
-        $this->assertAttributeEquals(['brand_name'], 'requestedStaticCapabilities', $client);
+        $ref = new \ReflectionProperty($client, 'requestedStaticCapabilities');
+        $ref->setAccessible(true);
+        $this->assertSame(['brand_name'], $ref->getValue($client));
     }
 
     public function testLookupDeviceID()
     {
         $httpClient = $this->mockHttpClient();
-        $httpClient->post(
-            "/v2/lookupdeviceid/json",
-            ["User-Agent" => "php-wmclient-api WM-test"],
-            Argument::any()
-        )
-            ->willReturn(ResponseMocker::wmValidDeviceResponse());
+        $httpClient->method('post')->willReturn(ResponseMocker::wmValidDeviceResponse());
 
-        $client = new WMClient($httpClient->reveal());
+        $client = new WMClient($httpClient);
 
         $device = $client->lookupDeviceID('samsung_sm_g950f_int_ver1');
 
@@ -68,21 +65,19 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
     public function testGetApiVersion()
     {
         $httpClient = $this->mockHttpClient();
-        $client = new WMClient($httpClient->reveal());
-        $this->assertInternalType('string', $client->getApiVersion());
+        $client = new WMClient($httpClient);
+        $this->assertIsString($client->getApiVersion());
     }
 
     /**
-     * @return \Prophecy\Prophecy\ObjectProphecy
+     * @return HttpClientInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private function mockHttpClient()
     {
-        $httpClient = $this->prophesize('\ScientiaMobile\WMClient\HttpClient\HttpClientInterface');
+        $httpClient = $this->createMock(HttpClientInterface::class);
         $response = ResponseMocker::wmValidServerInfoResponse();
-        $httpClient->getDefaultUserAgent()->willReturn('WM-test');
-        $httpClient->get("/v2/getinfo/json", [
-            "User-Agent" => "php-wmclient-api WM-test"
-        ])->willReturn($response);
+        $httpClient->method('getDefaultUserAgent')->willReturn('WM-test');
+        $httpClient->method('get')->willReturn($response);
         return $httpClient;
     }
 }

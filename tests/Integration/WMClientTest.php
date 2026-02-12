@@ -19,13 +19,14 @@
 namespace ScientiaMobile\WMClient\Integration;
 
 use GuzzleHttp\Psr7\Request;
+use PHPUnit\Framework\TestCase;
 use ScientiaMobile\WMClient\HttpClient\HttpClientException;
 use ScientiaMobile\WMClient\WMClient;
 
 /**
  * Class WMClientTest
  */
-class WMClientTest extends \PHPUnit_Framework_TestCase
+class WMClientTest extends TestCase
 {
     public function testCreate()
     {
@@ -39,37 +40,39 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWithEmptyServerValues()
     {
-        $this->setExpectedException("\Exception");
+        $this->expectException(\Exception::class);
         WMClient::create('http', '', '', '');
     }
 
     public function testCreateWithEmptyScheme()
     {
-        $this->setExpectedException("\InvalidArgumentException", "Invalid scheme. Allowed values: https or http");
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid scheme. Allowed values: https or http");
         WMClient::create('', 'localhost', 80);
     }
 
     public function testCreateWithInvalidScheme()
     {
-        $this->setExpectedException("\InvalidArgumentException", "Invalid scheme. Allowed values: https or http");
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid scheme. Allowed values: https or http");
         WMClient::create('ftp', 'localhost', 80);
     }
 
     public function testCreateWithInvalidHost()
     {
-        $this->setExpectedException("\InvalidArgumentException");
+        $this->expectException(\InvalidArgumentException::class);
         WMClient::create('http', 10, 80);
     }
 
     public function testCreateWithInvalidPort()
     {
-        $this->setExpectedException("\Exception");
+        $this->expectException(\Exception::class);
         WMClient::create('http', '', 0);
     }
 
     public function testCreateWithInvalidServer()
     {
-        $this->setExpectedException("\ScientiaMobile\WMClient\HttpClient\HttpClientException");
+        $this->expectException(HttpClientException::class);
         WMClient::create('http', 'invalid', 333);
     }
 
@@ -153,7 +156,7 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
             $this->assertSame('generic', $deviceData->capabilities('wurfl_id'));
         } else {
             // Applicative error is empty, we'll receive an error message in JSON payload
-            $this->assertContains('No User-Agent', $deviceData->error());
+            $this->assertStringContainsString('No User-Agent', $deviceData->error());
         }
     }
 
@@ -269,7 +272,7 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Switch', $deviceData->capabilities('model_name'));
         $this->assertSame('touchscreen', $deviceData->capabilities('pointing_method'));
     }
-    
+
     public function testLookupRequestWithNoHeaders()
     {
         $client = $this->makeTestClient();
@@ -285,7 +288,7 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
             $this->assertSame('generic', $deviceData->capabilities('wurfl_id'));
         } else {
             // Applicative error is empty, we'll receive an error message in JSON payload
-            $this->assertContains('No User-Agent', $deviceData->error());
+            $this->assertStringContainsString('No User-Agent', $deviceData->error());
         }
     }
 
@@ -355,9 +358,6 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($modelMktName[0]);
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetAllDevicesForMake()
     {
         $client = $this->makeTestClient();
@@ -366,6 +366,7 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($modelMktName[0]->marketingName());
         $this->assertGreaterThan(700, count($modelMktName));
 
+        $this->expectException(\Exception::class);
         $client->getAllDevicesForMake("Invalid");
     }
 
@@ -377,15 +378,13 @@ class WMClientTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($modelMktName[0]);
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetAllVersionsForOS()
     {
         $client = $this->makeTestClient();
         $modelMktName = $client->getAllVersionsForOS("Android");
         $this->assertGreaterThan(30, count($modelMktName));
 
+        $this->expectException(\Exception::class);
         $client->getAllDevicesForMake("NotExistingOs");
     }
 

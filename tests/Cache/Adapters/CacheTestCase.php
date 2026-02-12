@@ -18,7 +18,7 @@
 
 namespace ScientiaMobile\WMClient\Cache\Adapters;
 
-class CacheTestCase extends \PHPUnit_Framework_TestCase
+class CacheTestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WMAdapterCacheInterface
