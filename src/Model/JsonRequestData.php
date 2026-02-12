@@ -53,6 +53,8 @@ class JsonRequestData implements \JsonSerializable
         $this->data['wurfl_id'] = $deviceId;
     }
 
+    // Suppress return type deprecation to maintain PHP 7.4 compatibility
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         if (!$this->data['lookup_headers']) {

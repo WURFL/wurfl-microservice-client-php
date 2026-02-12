@@ -94,6 +94,8 @@ class JsonDeviceData implements \JsonSerializable
         return $this->data['ltime'];
     }
 
+    // Suppress return type deprecation to maintain PHP 7.4 compatibility
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->data;
