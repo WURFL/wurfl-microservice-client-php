@@ -14,13 +14,12 @@ This is the PHP Client API for accessing the WURFL Microservice. The API is rele
 
 ## Requirements
 
- - `PHP 7.4+`
+ - `PHP 7.4+` (runtime)
+ - `PHP 8.2+` (development and testing)
  - `json` extension (almost always included)
  - `curl` extension is recommended
 
-## Requirements for unit test
-
- - `PHP 8.2+`
+> **Note:** If you only need to use this library in your application, PHP 7.4+ is sufficient. If you want to run tests or contribute to development, you need PHP 8.2+.
 
 ## Installation using composer
 

@@ -1,8 +1,7 @@
 # Changelog
 
 ## [2.0.4] - 2026-02-13
-- Minimum required PHP version : 7.4
-- Minimum required PHP version for testing : 8.2
+- Minimum required PHP version: 7.4 (runtime), 8.2 (development and testing)
 - PHPUnit dependency updated in order to solve Unsafe Deserialization Vulnerability
 
 ## [2.0.3] - 2022-12-05
