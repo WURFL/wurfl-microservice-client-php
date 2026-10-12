@@ -14,8 +14,9 @@ This is the PHP Client API for accessing the WURFL Microservice. The API is rele
 
 ## Requirements
 
- - `PHP 7.4+` (runtime)
+ - `PHP 7.4+` (runtime, tested up to PHP 8.5)
  - `PHP 8.2+` (development and testing)
+ - `guzzlehttp/guzzle` 6.5.8+ or 7.x
  - `json` extension (almost always included)
  - `curl` extension is recommended
 

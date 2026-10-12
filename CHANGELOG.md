@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+- Supports Guzzle 7: `guzzlehttp/guzzle` constraint is now `^6.5.8 || ^7.0` (Composer 2.10+ blocks all Guzzle 6 releases due to security advisories)
+- Allows `psr/http-message` 2.x
+- Uses `GuzzleHttp\Utils::defaultUserAgent()` when available instead of the deprecated `GuzzleHttp\default_user_agent()` function
+- Removes `Reflection*::setAccessible()` calls from tests (deprecated in PHP 8.5)
+- Fix: `GuzzleClient::post()` now wraps errors in `HttpClientException` with the original message, code and previous exception
+- Tested on PHP 8.2, 8.3, 8.4 and 8.5
+
 ## [2.0.4] - 2026-02-13
 - Minimum required PHP version: 7.4 (runtime), 8.2 (development and testing)
 - PHPUnit dependency updated in order to solve Unsafe Deserialization vulnerability

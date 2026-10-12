@@ -20,6 +20,7 @@ namespace ScientiaMobile\WMClient\HttpClient;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Utils;
 use Psr\Http\Message\UriInterface;
 
 class GuzzleClient implements HttpClientInterface
@@ -109,7 +110,7 @@ class GuzzleClient implements HttpClientInterface
         try {
             $response = $this->client->post($uri, $options);
         } catch (\Exception $e) {
-            throw new HttpClientException($e);
+            throw new HttpClientException($e->getMessage(), $e->getCode(), $e);
         }
 
         return $response;
@@ -120,6 +121,11 @@ class GuzzleClient implements HttpClientInterface
      */
     public function getDefaultUserAgent()
     {
+        // Utils::defaultUserAgent() exists since Guzzle 7; the function is removed in Guzzle 8
+        if (method_exists(Utils::class, 'defaultUserAgent')) {
+            return Utils::defaultUserAgent();
+        }
+
         return \GuzzleHttp\default_user_agent();
     }
 }
