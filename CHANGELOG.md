@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.1.0] - 2026-10-13
 - Supports Guzzle 7: `guzzlehttp/guzzle` constraint is now `^6.5.8 || ^7.0` (Composer 2.10+ blocks all Guzzle 6 releases due to security advisories)
 - Allows `psr/http-message` 2.x
 - Uses `GuzzleHttp\Utils::defaultUserAgent()` when available instead of the deprecated `GuzzleHttp\default_user_agent()` function
