@@ -29,7 +29,6 @@ class FileCacheTest extends CacheTestCase
     public function testCacheFileWithInvalidData()
     {
         $method = new \ReflectionMethod('ScientiaMobile\WMClient\Cache\Adapters\FileCache', 'getFilePathForKey');
-        $method->setAccessible(true);
         $key = 'key';
         $filePathForKey = $method->invoke($this->cache, $key);
         @mkdir(dirname($filePathForKey), 0777, true);

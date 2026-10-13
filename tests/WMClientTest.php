@@ -42,11 +42,9 @@ class WMClientTest extends TestCase
         $client->setRequestedCapabilities(['is_app', 'brand_name', 'mobile_browser', 'invalid_cap']);
 
         $ref = new \ReflectionProperty($client, 'requestedVirtualCapabilities');
-        $ref->setAccessible(true);
         $this->assertSame(['is_app'], $ref->getValue($client));
 
         $ref = new \ReflectionProperty($client, 'requestedStaticCapabilities');
-        $ref->setAccessible(true);
         $this->assertSame(['brand_name'], $ref->getValue($client));
     }
 
